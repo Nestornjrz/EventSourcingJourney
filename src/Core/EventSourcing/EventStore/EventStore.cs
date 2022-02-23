@@ -17,21 +17,18 @@ namespace Core
 
         public void AppendStream(string streamType, string streamId, List<EventData> events, int expectedVersion)
         {
-            if (!events.Any()) throw new NotImplementedException();
+            if (!events.Any())
+                throw new NotImplementedException();
 
             var streamLastVersion = txlog.Values
-                .ToList()
-                .Where(x => x.StreamType == streamType)
-                .OrderByDescending(x => x.StreamId)
+                .Where(x => x.StreamType == streamType && x.StreamId == streamId)
+                .OrderByDescending(x => x.StreamVersion)
                 .First().StreamVersion;
 
-            if (streamLastVersion != expectedVersion) throw new Exception("Unexpected stream version");
+            if (streamLastVersion != expectedVersion)
+                throw new Exception("Unexpected stream version");
 
-            events.ForEach(e =>
-            {
-                var key = txlog.Keys.Count + 1;
-                this.txlog.Add(key, new EventData { StreamType = streamType, StreamId = streamId, Payload = e });
-            });
+            events.ForEach(e => this.txlog.Add(txlog.Keys.Count, e));
         }
         /// <summary>
         /// 
