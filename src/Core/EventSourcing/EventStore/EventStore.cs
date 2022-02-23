@@ -23,7 +23,8 @@ namespace Core
             var streamLastVersion = txlog.Values
                 .Where(x => x.StreamType == streamType && x.StreamId == streamId)
                 .OrderByDescending(x => x.StreamVersion)
-                .First().StreamVersion;
+                .First()
+                .StreamVersion;
 
             if (streamLastVersion != expectedVersion)
                 throw new Exception("Unexpected stream version");
