@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Core
+﻿namespace Core
 {
     public class EventStore
     {
         private Dictionary<int, EventData> txlog = new Dictionary<int, EventData>();
+        private List<EventStoreSubscription> subscriptions = new List<EventStoreSubscription>();
 
-        public List<EventData> ReadStream(string streamType, string streamId)
-        {
-            throw new NotImplementedException();
-        }
+        public List<EventData> ReadStream(string streamType, string streamId) =>
+            this.txlog
+            .Values
+            .Where(x => x.StreamId == streamId && x.StreamType == streamType)
+            .OrderBy(x => x.StreamVersion)
+            .ToList();
 
         public void AppendStream(string streamType, string streamId, List<EventData> events, int expectedVersion)
         {
             if (!events.Any())
                 throw new NotImplementedException();
 
-            var streamLastVersion = txlog.Values
+            var streamLastVersion = this.txlog.Values
                 .Where(x => x.StreamType == streamType && x.StreamId == streamId)
                 .OrderByDescending(x => x.StreamVersion)
                 .First()
@@ -29,17 +26,24 @@ namespace Core
             if (streamLastVersion != expectedVersion)
                 throw new Exception("Unexpected stream version");
 
-            events.ForEach(e => this.txlog.Add(txlog.Keys.Count, e));
+            events.ForEach(e =>
+            {
+                var eventNumber = txlog.Keys.Count;
+                this.txlog.Add(eventNumber, e);
+                this.subscriptions.ForEach(x => x.Dispatch(eventNumber, e));
+            });
+
+
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="eventNumber">Cual fue el ultimo numero de evento procesado</param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        public object CreateSubscription(int? eventNumber)
+
+        public EventStoreSubscription CreateSubscription(int? lastProcessedEventNumber, Action<int, EventData> handler)
         {
-            throw new InvalidOperationException();
+            var sub = new EventStoreSubscription(lastProcessedEventNumber, handler, this.RemoveSubscription);
+            this.subscriptions.Add(sub);
+            return sub;
         }
+
+        private void RemoveSubscription(EventStoreSubscription sub) =>
+            this.subscriptions.Remove(sub);
     }
 }
