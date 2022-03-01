@@ -12,28 +12,31 @@
             .OrderBy(x => x.StreamVersion)
             .ToList();
 
-        public void AppendStream(string streamType, string streamId, List<EventData> events, int expectedVersion)
+        public void AppendStream(string streamType, string streamId, List<EventData> events, int? expectedVersion = null)
         {
             if (!events.Any())
                 throw new NotImplementedException();
 
-            var streamLastVersion = this.txlog.Values
-                .Where(x => x.StreamType == streamType && x.StreamId == streamId)
-                .OrderByDescending(x => x.StreamVersion)
-                .First()
-                .StreamVersion;
+            int? streamLastVersion = null;
+            if (this.txlog.Values.Any())
+                streamLastVersion = this.txlog.Values
+                   .Where(x => x.StreamType == streamType && x.StreamId == streamId)
+                   .OrderByDescending(x => x.StreamVersion)
+                   .FirstOrDefault()
+                   ?.StreamVersion;
+
 
             if (streamLastVersion != expectedVersion)
                 throw new Exception("Unexpected stream version");
 
+            int currentVersion = streamLastVersion ?? -1;
             events.ForEach(e =>
             {
                 var eventNumber = txlog.Keys.Count;
+                e.StreamVersion = ++currentVersion;
                 this.txlog.Add(eventNumber, e);
                 this.subscriptions.ForEach(x => x.Dispatch(eventNumber, e));
             });
-
-
         }
 
         public EventStoreSubscription CreateSubscription(int? lastProcessedEventNumber, Action<int, EventData> handler)
