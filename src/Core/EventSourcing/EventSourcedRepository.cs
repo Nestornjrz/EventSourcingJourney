@@ -15,15 +15,29 @@ namespace Core.EventSourcing
             this.store = store;
         }
 
-        public T Get<T>(string streamId)
+        public T Get<T>(string streamId) where T : EventSourced, new()
         {
-            throw new NotImplementedException();
+            var eventSourcedEntity = new T();
+            var stream = this.store.ReadStream(eventSourcedEntity.StreamType, streamId);
+            stream.ForEach(e => eventSourcedEntity.Update(e.Payload));
+            return eventSourcedEntity;
         }
 
         public void Save<T>(T eventSourced) where T : EventSourced
         {
+            var uncommitedEvents = eventSourced.GetUncommitedEvents()
+                .Select(x => new EventData()
+                {
+                    StreamId = eventSourced.Id,
+                    StreamType = eventSourced.StreamType,
+                    Payload = x
+                })
+                .ToList();
 
-            this.store.AppendStream(eventSourced.StreamType, eventSourced.Id)
+            var expectedVersion = eventSourced.Version - uncommitedEvents.Count();
+
+            this.store.AppendStream(eventSourced.StreamType, eventSourced.Id,
+                uncommitedEvents, expectedVersion);
         }
     }
 }

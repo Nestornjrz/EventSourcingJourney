@@ -31,7 +31,7 @@ namespace Core.Tests
                     Payload="Lo que sea 3 :)"
                 }
              };
-            this.sut.AppendStream("Personas", "1", events);
+            this.sut.AppendStream("Personas", "1", events, -1);
 
             // Them
             var streams = this.sut.ReadStream("Personas", "1");
@@ -62,10 +62,10 @@ namespace Core.Tests
             });
 
             // When
-            this.sut.AppendStream("Personas", "1", new List<EventData>() { eventData });
+            this.sut.AppendStream("Personas", "1", new List<EventData>() { eventData }, -1);
 
             Assert.True(wasHanled);
-         }
+        }
     }
 
 }
