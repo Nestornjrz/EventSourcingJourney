@@ -19,7 +19,7 @@ namespace Core.EventSourcing
         {
             var eventSourcedEntity = new T();
             var stream = this.store.ReadStream(eventSourcedEntity.StreamType, streamId);
-            stream.ForEach(e => eventSourcedEntity.Update(e.Payload));
+            stream.ForEach(e => eventSourcedEntity.Apply(e.Payload));
             return eventSourcedEntity;
         }
 

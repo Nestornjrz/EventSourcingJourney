@@ -27,11 +27,16 @@
 
         public void Update(object @event)
         {
-            this.Apply(@event);
             this.uncommitedEvents.Add(@event);
+            this.Apply(@event);
+        }
+
+        internal void Apply(object @event)
+        {
+            this.When(@event);
             this.version++;
         }
 
-        protected abstract void Apply(object @event);
+        protected abstract void When(object @event);
     }
 }

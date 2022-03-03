@@ -28,10 +28,12 @@ namespace Core.Tests
             var employee = new Employee();
             employee.Update(new EmployeeCreated(id, name));
             this.sut.Save(employee);
+            Assert.Empty(employee.GetUncommitedEvents());
 
             // Se lee en ES
             employee = this.sut.Get<Employee>(id);
 
+            Assert.Empty(employee.GetUncommitedEvents());
             Assert.Equal(name, employee.Name);
             Assert.Equal(id, employee.Id);
             Assert.Equal(0, employee.Version);
@@ -42,7 +44,7 @@ namespace Core.Tests
     {
         public string Name { get; private set; } = null!;
 
-        protected override void Apply(object @event)
+        protected override void When(object @event)
         {
             switch (@event)
             {
