@@ -30,7 +30,7 @@
                         break;
 
                     case Requests.Commands.Add:
-                        cmdHandler.Add(arg!);
+                        cmdHandler.Add(arg!, "Poroto");
                         Console.WriteLine($"Product Added {arg}");
                         break;
 

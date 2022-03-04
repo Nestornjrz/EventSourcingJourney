@@ -1,4 +1,4 @@
-﻿namespace DemoHost
+﻿namespace DemoHost.ReadModel
 {
     public class RelationalDb
     {

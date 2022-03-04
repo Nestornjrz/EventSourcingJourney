@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Core;
+using Core.EventSourcing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +13,8 @@ namespace DemoHost
         public static Container CreateContainer()
         {
             var container = new Container();
-            var db = new RelationalDb();
+            var eventStore = new EventStore();
+            var db = new EventSourcedRepository(eventStore);
 
             return container
                 .Register(new ProductsCmdHandler(db))
