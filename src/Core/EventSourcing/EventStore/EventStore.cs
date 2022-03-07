@@ -1,6 +1,6 @@
 ﻿namespace Core
 {
-    public class EventStore
+    public class EventStore : IEventStore
     {
         private Dictionary<int, EventData> txlog = new Dictionary<int, EventData>();
         private List<EventStoreSubscription> subscriptions = new List<EventStoreSubscription>();

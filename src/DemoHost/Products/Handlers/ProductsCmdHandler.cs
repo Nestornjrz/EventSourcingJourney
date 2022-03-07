@@ -1,13 +1,14 @@
 ﻿using Core.EventSourcing;
 using DemoHost.Products.Events;
+using DemoHost.Products;
 
 namespace DemoHost
 {
     public class ProductsCmdHandler
     {
-        private readonly EventSourcedRepository repo;
+        private readonly IEventSourcedRepository repo;
 
-        public ProductsCmdHandler(EventSourcedRepository repo)
+        public ProductsCmdHandler(IEventSourcedRepository repo)
         {
             this.repo = repo;
         }

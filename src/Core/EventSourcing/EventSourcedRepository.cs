@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Core.EventSourcing
 {
-    public class EventSourcedRepository
+    public class EventSourcedRepository : IEventSourcedRepository
     {
-        private readonly EventStore store;
+        private readonly IEventStore store;
 
-        public EventSourcedRepository(EventStore store)
+        public EventSourcedRepository(IEventStore store)
         {
             this.store = store;
         }
