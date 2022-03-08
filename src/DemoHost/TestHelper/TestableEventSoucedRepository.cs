@@ -11,12 +11,12 @@ namespace DemoHost.TestHelper
     public class TestableEventSoucedRepository : IEventSourcedRepository
     {
         private readonly EventSourcedRepository repository;
-        private List<object> events = new List<object>();
+        private readonly TestableEventStore store;
 
         public TestableEventSoucedRepository()
         {
-            var eventStore = new EventStore();
-            this.repository = new EventSourcedRepository(eventStore);
+            this.store = new TestableEventStore();
+            this.repository = new EventSourcedRepository(this.store);
         }
 
         public T Get<T>(string streamId) where T : EventSourced, new()
@@ -26,13 +26,13 @@ namespace DemoHost.TestHelper
 
         public void Save<T>(T eventSourced) where T : EventSourced
         {
-
             this.repository.Save(eventSourced);
         }
 
-        public void Entonces<T>(Action<T> asserts)
+        public void ThenOnly<T>(Action<T> asserts)
         {
-
+            var e = this.store.Events.Single();
+            asserts((T)e);
         }
     }
 }
