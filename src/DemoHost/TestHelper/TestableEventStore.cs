@@ -20,6 +20,7 @@ namespace DemoHost.TestHelper
 
         public void AppendStream(string streamType, string streamId, List<EventData> events, int expectedVersion)
         {
+            this.Events.Clear();
             this.eventStore.AppendStream(streamType, streamId, events, expectedVersion);
             this.Events.AddRange(events.Select(x => x.Payload));
         }

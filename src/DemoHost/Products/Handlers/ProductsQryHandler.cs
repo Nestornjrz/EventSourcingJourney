@@ -15,7 +15,7 @@ namespace DemoHost
             throw new NotImplementedException();
         }
 
-        public List<Product> GetAllProducts()
+        public List<ProductEntity> GetAllProducts()
         {
             throw new NotImplementedException();
         }

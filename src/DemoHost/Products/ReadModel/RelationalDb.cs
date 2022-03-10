@@ -4,14 +4,14 @@
     {
         public RelationalDb()
         {
-            this.Products = new List<Product>();
+            this.Products = new List<ProductEntity>();
         }
-        public List<Product> Products { get; set; }
+        public List<ProductEntity> Products { get; set; }
     }
 
-    public class Product
+    public class ProductEntity
     {
-        public Product(string id, int quantity)
+        public ProductEntity(string id, int quantity)
         {
             this.Id = id;
             this.Quantity = quantity;

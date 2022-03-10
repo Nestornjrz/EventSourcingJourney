@@ -19,7 +19,7 @@ namespace DemoHost.TestHelper
             this.repository = new EventSourcedRepository(this.store);
         }
 
-        public T Get<T>(string streamId) where T : EventSourced, new()
+        public T? Get<T>(string streamId) where T : EventSourced, new()
         {
             return this.repository.Get<T>(streamId);
         }

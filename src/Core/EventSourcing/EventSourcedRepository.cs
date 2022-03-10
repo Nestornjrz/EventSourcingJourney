@@ -15,10 +15,11 @@ namespace Core.EventSourcing
             this.store = store;
         }
 
-        public T Get<T>(string streamId) where T : EventSourced, new()
+        public T? Get<T>(string streamId) where T : EventSourced, new()
         {
             var eventSourcedEntity = new T();
             var stream = this.store.ReadStream(eventSourcedEntity.StreamType, streamId);
+            if (stream.Count == 0) return null;
             stream.ForEach(e => eventSourcedEntity.Apply(e.Payload));
             return eventSourcedEntity;
         }

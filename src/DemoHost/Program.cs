@@ -16,11 +16,13 @@
             {
                 var tokens = req?.Split(" ");
                 string? arg = null;
+                string? arg2 = null;
 
                 if (tokens is not null && tokens.Length == 2)
                 {
                     req = tokens[0];
                     arg = tokens[1];
+                    arg2 = tokens[2];
                 }
 
                 switch (req)
@@ -30,7 +32,7 @@
                         break;
 
                     case Requests.Commands.Add:
-                        cmdHandler.Add(arg!, "Poroto");
+                        cmdHandler.Add(arg!, "Lo que sea");
                         Console.WriteLine($"Product Added {arg}");
                         break;
 
