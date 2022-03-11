@@ -11,12 +11,14 @@
 
     public class ProductEntity
     {
-        public ProductEntity(string id, int quantity)
+        public ProductEntity(string id, string name, int quantity)
         {
             this.Id = id;
+            this.Name = name;
             this.Quantity = quantity;
         }
         public string Id { get; }
+        public string Name { get; }
         public int Quantity { get; internal set; }
     }
 }

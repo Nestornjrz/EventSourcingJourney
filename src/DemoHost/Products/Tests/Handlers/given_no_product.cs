@@ -1,6 +1,4 @@
-﻿using Core;
-using Core.EventSourcing;
-using DemoHost.Products.Events;
+﻿using DemoHost.Products.Events;
 using DemoHost.TestHelper;
 using Xunit;
 
@@ -51,7 +49,8 @@ namespace DemoHost.Products.Tests
         {
             this.cmdHandler.Add(this.id, this.name);
 
-            this.esRepository.ThenOnly<ProductIncreased>(e => {
+            this.esRepository.ThenOnly<ProductIncreased>(e =>
+            {
                 Assert.Equal(id, e.Id);
                 Assert.Equal(name, e.Name);
             });

@@ -14,7 +14,19 @@ namespace DemoHost.Products.ReadModel
 
         public void Handle(ProductCreated e)
         {
-            this.db.Products.Add(new ProductEntity(e.Id, 1));
+            this.db.Products.Add(new ProductEntity(e.Id, e.Name , 1));
+        }
+
+        public void Handle(ProductIncreased e)
+        {
+            var product = this.db.Products.First(p => p.Id == e.Id);
+            product.Quantity++;
+        }
+
+        public void Handle(ProductRemoved e)
+        {
+            var product = db.Products.First(p => p.Id == e.Id);
+            db.Products.Remove(product);
         }
     }
 }
