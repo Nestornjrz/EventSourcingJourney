@@ -9,6 +9,7 @@ namespace DemoHost.Products.Tests.ReadModel
     {
         protected readonly RelationalDb db = new RelationalDb();
         protected readonly ProductsReadModelProjection sut;
+
         public given_read_model_projection()
         {
             this.sut = new ProductsReadModelProjection(this.db);
@@ -52,6 +53,16 @@ namespace DemoHost.Products.Tests.ReadModel
             Assert.Equal(id, product.Id);
             Assert.Equal(name, product.Name);
             Assert.Equal(2, product.Quantity);
+        }
+
+        [Fact]
+        public void when_the_product_is_removed_the_product_is_removed_int_the_projection()
+        {
+            this.sut.Handle(new ProductRemoved(this.id));
+
+            var product = this.db.Products.FirstOrDefault(x => x.Id == id);
+
+            Assert.Null(product);
         }
     }
 }

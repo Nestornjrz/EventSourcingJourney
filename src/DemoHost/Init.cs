@@ -1,10 +1,7 @@
 ﻿using Core;
 using Core.EventSourcing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DemoHost.Products.ReadModel;
+using DemoHost.ReadModel;
 
 namespace DemoHost
 {
@@ -14,11 +11,16 @@ namespace DemoHost
         {
             var container = new Container();
             var eventStore = new EventStore();
-            var db = new EventSourcedRepository(eventStore);
+            var relationalDb = new RelationalDb();
+            var readModel = new ProductsReadModelProjection(relationalDb);
+            var es = new EventSourcedRepository(eventStore);
+
+            eventStore.CreateSubscription(null, (eventNumber, e) =>
+                ((dynamic)readModel).Handle((dynamic)e.Payload));
 
             return container
-                .Register(new ProductsCmdHandler(db))
-                .Register(new ProductsQryHandler(db));
+                .Register(new ProductsCmdHandler(es))
+                .Register(new ProductsQryHandler(relationalDb));
         }
     }
 }
