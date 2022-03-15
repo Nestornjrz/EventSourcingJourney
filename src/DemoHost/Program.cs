@@ -18,11 +18,11 @@
                 string? arg = null;
                 string? arg2 = null;
 
-                if (tokens is not null && tokens.Length == 2)
+                if (tokens is not null && (tokens.Length == 2 || tokens.Length == 3))
                 {
                     req = tokens[0];
                     arg = tokens[1];
-                    arg2 = tokens[2];
+                    arg2 = tokens.Length == 3 ? tokens[2] : "";
                 }
 
                 switch (req)
@@ -32,7 +32,7 @@
                         break;
 
                     case Requests.Commands.Add:
-                        cmdHandler.Add(arg!, "Lo que sea");
+                        cmdHandler.Add(arg!, arg2 ?? "");
                         Console.WriteLine($"Product Added {arg}");
                         break;
 
@@ -49,7 +49,7 @@
                     case Requests.Queries.GetAllProducts:
                         var products = qryHandler.GetAllProducts();
                         Console.WriteLine($"Displaying {products.Count} product/s");
-                        products.ForEach(x => Console.WriteLine($"id:{x.Id}, quantity:{x.Quantity}"));                        
+                        products.ForEach(x => Console.WriteLine($"id:{x.Id}, quantity:{x.Quantity}"));
                         break;
 
                     default:
